@@ -5,37 +5,35 @@ namespace App\Controller;
 
 use App\Entity\Contact;
 use App\Form\Type\ContactType;
-use App\Repository\ContactRepository;
+use App\Manager\ContactManager;
 use App\Service\FileUploadService;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
 class AddressbookController extends AbstractController
 {
     public function __construct(
-        private FileUploadService $fileUploadService,
-        private ContactRepository $contactRepository
+        private ContactManager $contactManager
     ) {}
 
     #[Route('/', name: 'addressbook')]
     public function index(): Response
     {
-        $contactList = $this->contactRepository->findAll();
-
         return $this->render(
             'addressbook_view.html.twig',
             [
-                'contactList' => $contactList,
+                'contactList' => $this->contactManager->getAllContacts(),
             ]
         );
     }
 
     #[Route('/add', name: 'addressbook_add')]
-    public function add(Request $request, EntityManagerInterface $doctrine): Response
+    public function add(Request $request, FileUploadService $fileUploadService): Response
     {
         $contact = new Contact();
         $form = $this->createForm(ContactType::class, $contact);
@@ -46,11 +44,9 @@ class AddressbookController extends AbstractController
 
             if ($picture instanceof UploadedFile) {
                 $storeDirectory = $this->getParameter('picture_upload_directory');
-                $storedFile = $this->fileUploadService->storeUpload($picture, $storeDirectory);
+                $storedFile = $fileUploadService->storeUpload($picture, $storeDirectory);
                 $contact->setPicture($storedFile->getFilename());
-
-                $doctrine->persist($contact);
-                $doctrine->flush();
+                $this->contactManager->save($contact);
             }
 
             return $this->redirectToRoute('addressbook');
@@ -62,5 +58,21 @@ class AddressbookController extends AbstractController
                 'form' => $form,
             ]
         );
+    }
+
+    #[Route('/delete/{contactId}', name: 'addressbook_delete')]
+    public function delete(int $contactId, Filesystem $filesystem): Response
+    {
+        $contact = $this->contactManager->getById($contactId);
+
+        if ($contact->isPresent() === false) {
+            throw new NotFoundHttpException();
+        }
+
+        $filesystem->remove($this->getParameter('picture_upload_directory') . '/' . $contact->getPicture());
+        $this->contactManager->delete($contact);
+        $this->addFlash('success', 'Contact deleted.');
+
+        return $this->redirectToRoute('addressbook');
     }
 }

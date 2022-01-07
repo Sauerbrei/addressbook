@@ -6,6 +6,9 @@
     <div style="margin-top: 50px;">
         {% for contact in contactList %}
             <div class="contact">
+                <div>
+                    <a href="{{ path('addressbook_delete', {contactId: contact.id}) }}">delete</a>
+                </div>
                 {% if contact.picture %}
                     <img src="{{ asset('uploads/pictures/') ~ contact.picture }}" height="100" width="100"/>
                 {% endif %}

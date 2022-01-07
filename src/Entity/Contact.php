@@ -3,17 +3,21 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Interfaces\PresenceInterface;
 use App\Repository\ContactRepository;
+use App\Traits\Persistable;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ContactRepository::class)]
-class Contact
+class Contact implements PresenceInterface
 {
+    use Persistable;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private int $id;
+    private ?int $id = 0;
 
     #[ORM\Column(type: 'string', length: 100)]
     private string $firstName;
