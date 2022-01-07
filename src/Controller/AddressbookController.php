@@ -53,7 +53,7 @@ class AddressbookController extends AbstractController
             return $this->redirectToRoute('addressbook');        }
 
         return $this->renderForm(
-            'addressbook_add.html.twig',
+            'addressbook_form.html.twig',
             [
                 'form' => $form,
             ]
@@ -87,7 +87,7 @@ class AddressbookController extends AbstractController
         }
 
         return $this->renderForm(
-            'addressbook_add.html.twig',
+            'addressbook_form.html.twig',
             [
                 'form' => $form,
             ]
