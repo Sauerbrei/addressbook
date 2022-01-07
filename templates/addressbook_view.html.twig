@@ -2,6 +2,7 @@
 
 {% block content %}
     <h1>Addressbook</h1>
+    <a href="{{ path('addressbook_add') }}">Add a new contact</a>
     <div>
         {% for contact in contactList %}
             <div class="contact">

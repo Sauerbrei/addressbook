@@ -1,0 +1,9 @@
+{% extends "layout.html.twig" %}
+
+{% block content %}
+    <h1>Add a new contact</h1>
+    <a href="{{ path('addressbook') }}">Go back</a>
+    <div>
+        {{ form(form) }}
+    </div>
+{% endblock %}

@@ -10,3 +10,6 @@ TLDR; first start? `make start`
 4. Open `https://localhost` in your favorite web browser and [accept the auto-generated TLS certificate](https://stackoverflow.com/a/15076602/1352334)
 5. Run `make down` to stop the Docker containers.
 
+## Ideas
+ - Translate the form-labels via 'label' => 'translation.key'
+ - Add more constraints to the forms via 'constraints' => [new ...()]
