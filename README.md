@@ -2,7 +2,7 @@
 
 ## Getting Started
 
-TLDR; first start? `make start`
+TLDR; first start? `make start && make migrate` goto http://localhost
 
 1. If not already done, [install Docker Compose](https://docs.docker.com/compose/install/)
 2. Run `make build` to build fresh images
@@ -11,5 +11,7 @@ TLDR; first start? `make start`
 5. Run `make down` to stop the Docker containers.
 
 ## Ideas
+ - execute migrations automatically on startup
  - Translate the form-labels via 'label' => 'translation.key'
  - Add more constraints to the forms via 'constraints' => [new ...()]
+   - I assumed to validate only against the generic types (look ContactType)

@@ -113,6 +113,9 @@ RUN set -eux; \
 	chmod +x bin/console; sync
 VOLUME /srv/app/var
 
+RUN mkdir /srv/app/var/database && chown -R :www-data /srv/app/var/database && chmod -R 775 /srv/app/var/database
+
+
 ENTRYPOINT ["docker-entrypoint"]
 CMD ["php-fpm"]
 
