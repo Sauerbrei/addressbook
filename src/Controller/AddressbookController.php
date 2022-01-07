@@ -18,7 +18,8 @@ use Symfony\Component\Routing\Annotation\Route;
 class AddressbookController extends AbstractController
 {
     public function __construct(
-        private ContactManager $contactManager
+        private ContactManager $contactManager,
+        private FileUploadService $fileUploadService
     ) {}
 
     #[Route('/', name: 'addressbook')]
@@ -32,8 +33,8 @@ class AddressbookController extends AbstractController
         );
     }
 
-    #[Route('/add', name: 'addressbook_add')]
-    public function add(Request $request, FileUploadService $fileUploadService): Response
+    #[Route('/create', name: 'addressbook_create')]
+    public function create(Request $request): Response
     {
         $contact = new Contact();
         $form = $this->createForm(ContactType::class, $contact);
@@ -43,11 +44,11 @@ class AddressbookController extends AbstractController
             $picture = $form->get('picture')->getData();
 
             if ($picture instanceof UploadedFile) {
-                $storeDirectory = $this->getParameter('picture_upload_directory');
-                $storedFile = $fileUploadService->storeUpload($picture, $storeDirectory);
+                $storedFile = $this->fileUploadService->storeUpload($picture);
                 $contact->setPicture($storedFile->getFilename());
-                $this->contactManager->save($contact);
             }
+
+            $this->contactManager->save($contact);
 
             return $this->redirectToRoute('addressbook');
         }
@@ -69,7 +70,7 @@ class AddressbookController extends AbstractController
             throw new NotFoundHttpException();
         }
 
-        $filesystem->remove($this->getParameter('picture_upload_directory') . '/' . $contact->getPicture());
+        $filesystem->remove($this->fileUploadService->getTargetDirectory() . '/' . $contact->getPicture());
         $this->contactManager->delete($contact);
         $this->addFlash('success', 'Contact deleted.');
 

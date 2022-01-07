@@ -10,10 +10,11 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 class FileUploadService
 {
     public function __construct(
+        private string $targetDirectory,
         private SluggerInterface $slugger
     ) {}
 
-    public function storeUpload(UploadedFile $file, string $destination): File
+    public function storeUpload(UploadedFile $file): File
     {
         $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
         $safeFilename = $this->slugger->slug($originalFilename);
@@ -24,6 +25,11 @@ class FileUploadService
             $file->guessExtension()
         );
 
-        return $file->move($destination, $newFilename);
+        return $file->move($this->getTargetDirectory(), $newFilename);
+    }
+
+    public function getTargetDirectory(): string
+    {
+        return $this->targetDirectory;
     }
 }

@@ -2,7 +2,7 @@
 
 {% block content %}
     <h1>Addressbook</h1>
-    <a href="{{ path('addressbook_add') }}">Add a new contact</a>
+    <a href="{{ path('addressbook_create') }}">Add a new contact</a>
     <div style="margin-top: 50px;">
         {% for contact in contactList %}
             <div class="contact">
