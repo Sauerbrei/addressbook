@@ -12,7 +12,6 @@ services:
     restart: unless-stopped
     volumes:
       - php_socket:/var/run/php
-      - ./var/database/:/srv/app/var/database/
     healthcheck:
       interval: 10s
       timeout: 3s
@@ -65,6 +64,8 @@ services:
     image: nouchka/sqlite3:latest
     stdin_open: true
     tty: true
+    volumes:
+      - ./var/database/:/srv/app/var/database/
 
 # Mercure is installed as a Caddy module, prevent the Flex recipe from installing another service
 ###> symfony/mercure-bundle ###

@@ -14,7 +14,7 @@
                     <img src="{{ asset('uploads/pictures/') ~ contact.picture }}" height="100" width="100"/>
                 {% endif %}
                 <p>
-                    <span>Name: </span> <span>{{ contact.firstName }} {{ contact.lastName }}</span>
+                    <span>Name: </span> <span id="name">{{ contact.firstName }} {{ contact.lastName }}</span>
                 </p>
                 <p>
                     <span>Address: </span> <span>{{ contact.street }}, {{ contact.zip }} {{ contact.city }}, {{ contact.country }}</span>
