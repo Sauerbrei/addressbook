@@ -18,6 +18,7 @@ RUN apk add --no-cache \
 		gettext \
 		git \
 		gnu-libiconv \
+    	make \
 	;
 
 # install gnu-libiconv and set LD_PRELOAD env to make iconv work fully on Alpine image.
@@ -25,6 +26,7 @@ RUN apk add --no-cache \
 ENV LD_PRELOAD /usr/lib/preloadable_libiconv.so
 
 ARG APCU_VERSION=5.1.21
+ARG XDEBUG_VERSION=3.1.2
 RUN set -eux; \
 	apk add --no-cache --virtual .build-deps \
 		$PHPIZE_DEPS \
@@ -40,11 +42,13 @@ RUN set -eux; \
 	; \
 	pecl install \
 		apcu-${APCU_VERSION} \
+    	xdebug-$XDEBUG_VERSION \
 	; \
 	pecl clear-cache; \
 	docker-php-ext-enable \
 		apcu \
 		opcache \
+    	xdebug \
 	; \
 	\
 	runDeps="$( \
@@ -55,7 +59,7 @@ RUN set -eux; \
 	)"; \
 	apk add --no-cache --virtual .phpexts-rundeps $runDeps; \
 	\
-	apk del .build-deps
+	apk del .build-deps;
 
 COPY docker/php/docker-healthcheck.sh /usr/local/bin/docker-healthcheck
 RUN chmod +x /usr/local/bin/docker-healthcheck
@@ -97,8 +101,6 @@ ENV SYMFONY_VERSION ${SYMFONY_VERSION}
 RUN composer create-project "${SKELETON} ${SYMFONY_VERSION}" . --stability=$STABILITY --prefer-dist --no-dev --no-progress --no-interaction; \
 	composer clear-cache
 
-###> recipes ###
-###< recipes ###
 
 COPY . .
 

@@ -18,12 +18,18 @@ services:
       retries: 3
       start_period: 30s
     environment:
-      # Run "composer require symfony/orm-pack" to install and configure Doctrine ORM
-      DATABASE_URL: postgresql://${POSTGRES_USER:-symfony}:${POSTGRES_PASSWORD:-ChangeMe}@database:5432/${POSTGRES_DB:-app}?serverVersion=${POSTGRES_VERSION:-13}
-      # Run "composer require symfony/mercure-bundle" to install and configure the Mercure integration
       MERCURE_URL: ${CADDY_MERCURE_URL:-http://caddy/.well-known/mercure}
       MERCURE_PUBLIC_URL: https://${SERVER_NAME:-localhost}/.well-known/mercure
       MERCURE_JWT_SECRET: ${CADDY_MERCURE_JWT_SECRET:-!ChangeMe!}
+      XDEBUG_CONFIG: >-
+        client_host=host.docker.internal
+      XDEBUG_MODE: debug
+        # This should correspond to the server declared in PHPStorm `Preferences | Languages & Frameworks | PHP | Servers`
+        # Then PHPStorm will use the corresponding path mappings
+      PHP_IDE_CONFIG: serverName=symfony
+    extra_hosts:
+#       Ensure that host.docker.internal is correctly defined on Linux
+      - host.docker.internal:host-gateway
 
   caddy:
     build:
@@ -53,6 +59,13 @@ services:
       - target: 443
         published: ${HTTP3_PORT:-443}
         protocol: udp
+
+  database:
+    image: nouchka/sqlite3:latest
+    stdin_open: true
+    tty: true
+    volumes:
+      - ./var/database/:/srv/app/var/database/
 
 # Mercure is installed as a Caddy module, prevent the Flex recipe from installing another service
 ###> symfony/mercure-bundle ###
