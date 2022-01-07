@@ -50,6 +50,39 @@ class AddressbookController extends AbstractController
 
             $this->contactManager->save($contact);
 
+            return $this->redirectToRoute('addressbook');        }
+
+        return $this->renderForm(
+            'addressbook_add.html.twig',
+            [
+                'form' => $form,
+            ]
+        );
+    }
+
+    #[Route('/edit/{contactId}', name: 'addressbook_update')]
+    public function update(int $contactId, Request $request, Filesystem $filesystem): Response
+    {
+        $contact = $this->contactManager->getById($contactId);
+
+        if ($contact->isPresent() === false) {
+            throw new NotFoundHttpException();
+        }
+
+        $form = $this->createForm(ContactType::class, $contact);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $picture = $form->get('picture')->getData();
+
+            if ($picture instanceof UploadedFile) {
+                $filesystem->remove($this->fileUploadService->getTargetDirectory() . '/' . $contact->getPicture());
+                $storedFile = $this->fileUploadService->storeUpload($picture);
+                $contact->setPicture($storedFile->getFilename());
+            }
+
+            $this->contactManager->save($contact);
+
             return $this->redirectToRoute('addressbook');
         }
 

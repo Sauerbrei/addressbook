@@ -7,6 +7,7 @@
         {% for contact in contactList %}
             <div class="contact">
                 <div>
+                    <a href="{{ path('addressbook_update', {contactId: contact.id}) }}">update</a> |
                     <a href="{{ path('addressbook_delete', {contactId: contact.id}) }}">delete</a>
                 </div>
                 {% if contact.picture %}
