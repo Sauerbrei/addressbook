@@ -1,0 +1,29 @@
+{% extends "layout.html.twig" %}
+
+{% block content %}
+    <h1>Addressbook</h1>
+    <div>
+        {% for contact in contactList %}
+            <div class="contact">
+                {% if contact.picture %}
+
+                {% endif %}
+                <p>
+                    <span>Name: </span> <span>{{ contact.firstName }} {{ contact.lastName }}</span>
+                </p>
+                <p>
+                    <span>Address: </span> <span>{{ contact.street }}, {{ contact.zip }} {{ contact.city }}, {{ contact.country }}</span>
+                </p>
+                <p>
+                    <span>Phone: </span> <span>{{ contact.phone }}</span>
+                </p>
+                <p>
+                    <span>Birthday: </span> <span>{{ contact.birthday|format('d.m.Y') }}</span>
+                </p>
+                <p>
+                    <span>E-Mail: </span> <span>{{ contact.email }}</span>
+                </p>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
