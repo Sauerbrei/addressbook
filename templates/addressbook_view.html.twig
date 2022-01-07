@@ -3,11 +3,11 @@
 {% block content %}
     <h1>Addressbook</h1>
     <a href="{{ path('addressbook_add') }}">Add a new contact</a>
-    <div>
+    <div style="margin-top: 50px;">
         {% for contact in contactList %}
             <div class="contact">
                 {% if contact.picture %}
-
+                    <img src="{{ asset('uploads/pictures/') ~ contact.picture }}" height="100" width="100"/>
                 {% endif %}
                 <p>
                     <span>Name: </span> <span>{{ contact.firstName }} {{ contact.lastName }}</span>
@@ -19,12 +19,13 @@
                     <span>Phone: </span> <span>{{ contact.phone }}</span>
                 </p>
                 <p>
-                    <span>Birthday: </span> <span>{{ contact.birthday|format('d.m.Y') }}</span>
+                    <span>Birthday: </span> <span>{{ contact.birthday|date('d.m.Y') }}</span>
                 </p>
                 <p>
                     <span>E-Mail: </span> <span>{{ contact.email }}</span>
                 </p>
             </div>
+            <hr />
         {% endfor %}
     </div>
 {% endblock %}
