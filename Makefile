@@ -38,6 +38,9 @@ sh: ## Connect to the PHP FPM container
 migrate:
 	@$(PHP_CONT) bin/console --no-interaction doctrine:migrations:migrate
 
+test:
+	@$(PHP_CONT) bin/console --no-interaction doctrine:fixtures:load ; $(PHP_CONT) bin/phpunit
+
 ## —— Composer 🧙 ——————————————————————————————————————————————————————————————
 composer: ## Run composer, pass the parameter "c=" to run a given command, example: make composer c='req symfony/orm-pack'
 	@$(eval c ?=)

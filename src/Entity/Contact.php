@@ -54,6 +54,12 @@ class Contact implements PresenceInterface
         return $this->id ?? 0;
     }
 
+    public function setId(int $id): self
+    {
+        $this->id = $id;
+        return $this;
+    }
+
     public function getFirstName(): string
     {
         return $this->firstName;
